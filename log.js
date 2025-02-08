@@ -61,7 +61,7 @@ window.addEventListener('load', () => {
                 ret = ret+"<p>```</p>";
                 ret = ret+"<p>エラー : "+result[i][1].length+"回</p><br>";
                 for (  let k = 0;  k < result[i][1].length;  k++  ){
-                    ret = ret+result[i][1][k];
+                    ret = ret+"<p>"+result[i][1][k]+"</p>";
                 }
                 ret = ret+"<p>```</p>";
             }
