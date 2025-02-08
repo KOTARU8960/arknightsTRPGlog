@@ -17,6 +17,11 @@ window.addEventListener('load', () => {
         const text = reader.result.split('\n');
         const index = ( text.length - 14) / 8;
 
+        if (text[6] != "    <title>ccfolia - logs</title>") {
+            pre.innerHTML = "<h2>ccfoliaのログファイルではありません</h2>";
+            return;
+        }
+
         for ( let i = 0;  i < index;  i++  ){
             let textlen = text[16 + i*8].trim()
             if(ad.test(textlen)){
