@@ -8,8 +8,8 @@ window.addEventListener('load', () => {
       }
       const file = input.files[0];
       const reader = new FileReader();
-      const ab = /^[0-9()+-/*]{0,}AB&lt;=[0-9()+-/*]{0,}[ $]/;
-      const ad = /^[0-9()+-/*]{0,}AD&lt;=[0-9()+-/*]{0,}[ $]/;
+      const ab = /^[0-9()+-/*]{0,}[aA][bB][0-9()+-/*]{0,}&lt;=[0-9()+-/*]{0,} /;
+      const ad = /^[0-9()+-/*]{0,}[aA][dD][0-9()+-/*]{0,}&lt;=[0-9()+-/*]{0,} /;
       const num = /[1-9]/
       reader.onload = () => {
         var names = [];
@@ -67,7 +67,7 @@ window.addEventListener('load', () => {
 
         let ret = ""
         for (  let i = 0;  i < names.length;  i++  ){
-        ret = ret+"<h1># "+names[i]+"(ロール回数："+result[i][2]+"回)</h1>";
+        ret = ret+"<h2>## "+names[i]+"(ロール回数："+result[i][2]+"回)</h2>";
 
             if(!(result[i][0].length+result[i][1].length-2)){
                 ret = ret+"<p>クリエラ無し！</p>";
