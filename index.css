@@ -13,16 +13,16 @@ body {
   background: #fff8d8;
 }
 main {
-  width: 100%;
-  padding: 1em;
+  padding: 1%;
+  width: 98%;
 }
 header {
-  width: 100%;
-  padding: 1em;
+  padding: 1%;
   background: #ccccff;
+  width: 98%;
 }
 footer {
-  width: 100%;
-  padding: 1em;
+  padding: 1%;
   background: #ccccff;
+  width: 98%;
 }
