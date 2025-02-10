@@ -8,26 +8,29 @@ window.addEventListener('load', () => {
       }
       const file = input.files[0];
       const reader = new FileReader();
-      const ab = /^[0-9()+-/*]{0,}[aA][bB][0-9()+-/*]{0,}&lt;=[0-9()+-/*]{0,} /;
-      const ad = /^[0-9()+-/*]{0,}[aA][dD][0-9()+-/*]{0,}&lt;=[0-9()+-/*]{0,} /;
+      const ab = /^[0-9()+-/*FCUR]{0,}[aA][bB][0-9()+-/*FCUR]{0,}&lt;=[0-9()+-/*FCUR]{0,} /;
+      const ad = /^[0-9()+-/*FCUR]{0,}[aA][dD][0-9()+-/*FCUR]{0,}&lt;=[0-9()+-/*FCUR]{0,} /;
+      const p = /^<p/;
       const num = /[1-9]/
       reader.onload = () => {
         var names = [];
         var result = []
         const pre = document.getElementById('pre1');
         const text = reader.result.split('\n');
-        const index = ( text.length - 14) / 8;
 
         if (text[6] != "    <title>ccfolia - logs</title>") {
             pre.innerHTML = "<h2>ccfoliaのログファイルではありません</h2>";
             return;
         }
 
-        for ( let i = 0;  i < index;  i++  ){
-            let textlen = text[16 + i*8].trim()
-
+        for ( let i = 0;  i < text.length;  i++  ){
+            if(!p.test(text[i].trim())){
+                continue;
+            }
+            
+            let textlen = text[i+4].trim()
             if(ad.test(textlen)){
-                let namelen = text[14 + i*8];
+                let namelen = text[i+2];
                 let name = namelen.substring(namelen.indexOf(">")+1,namelen.lastIndexOf("<"))
                 if (!names.includes(name)){
                     names.push(name);
@@ -45,7 +48,7 @@ window.addEventListener('load', () => {
             }
 
             if(ab.test(textlen)){
-                let namelen = text[14 + i*8];
+                let namelen = text[i+2];
                 let name = namelen.substring(namelen.indexOf(">")+1,namelen.lastIndexOf("<"))
                 let cri = textlen[textlen.lastIndexOf("C")-1]
                 let err = textlen[textlen.lastIndexOf("E")-1]
@@ -71,24 +74,27 @@ window.addEventListener('load', () => {
 
             if(!(result[i][0].length+result[i][1].length-2)){
                 ret = ret+"<p>クリエラ無し！</p>";
+                continue;
             }
+            ret = ret+"<p>```</p>";
             if(result[i][0].length-1){
-                ret = ret+"<p>```</p>";
                 ret = ret+"<p>クリティカル : "+result[i][0][0]+"回("+Math.round((result[i][0][0]*100)/result[i][2])+"%)</p><br>";
                 for (  let k = 1;  k < result[i][0].length;  k++  ){
                     ret = ret+"<p>"+result[i][0][k]+"</p>";
                 }
-                ret = ret+"<p>```</p>";
+            }
+
+            if((result[i][0].length-1)&&(result[i][1].length-1)){
+                ret = ret+"<p>``````</p>";
             }
 
             if(result[i][1].length-1){
-                ret = ret+"<p>```</p>";
                 ret = ret+"<p>エラー : "+result[i][1][0]+"回("+Math.round((result[i][1][0]*100)/result[i][2])+"%)</p><br>";
                 for (  let k = 1;  k < result[i][1].length;  k++  ){
                     ret = ret+"<p>"+result[i][1][k]+"</p>";
                 }
-                ret = ret+"<p>```</p>";
             }
+            ret = ret+"<p>```</p>";
         }
         
         pre.innerHTML = ret;
