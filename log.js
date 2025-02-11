@@ -50,14 +50,14 @@ window.addEventListener('load', () => {
                     }
                     else{
                         resultlen = text[i+5+(k*3)].trim()
-                        repnum = textlen+"#"+(k+1)
+                        repnum = textlen.slice( 0, -3 ).replace(ad,"")
                     }
                     if(resultlen.endsWith("クリティカル！")){
-                        result[names.indexOf(name)][0].push(repnum+resultlen.replace(/&lt;/g,"<").replace(/&gt;/g,">"))
+                        result[names.indexOf(name)][0].push(repnum+resultlen.replace(ad,"").replace(/&lt;/g,"<").replace(/&gt;/g,">"))
                         result[names.indexOf(name)][0][0]++
                     }
                     if(resultlen.endsWith("エラー")){
-                        result[names.indexOf(name)][1].push(repnum+resultlen.replace(/&lt;/g,"<").replace(/&gt;/g,">"))
+                        result[names.indexOf(name)][1].push(repnum+resultlen.replace(ad,"").replace(/&lt;/g,"<").replace(/&gt;/g,">"))
                         result[names.indexOf(name)][1][0]++
                     }
                 }
@@ -84,7 +84,7 @@ window.addEventListener('load', () => {
                     }
                     else{
                         resultlen = text[i+5+(k*3)].trim()
-                        repnum = textlen.slice( 0, -3 )+" #"+(k+1)
+                        repnum = textlen.slice( 0, -3 ).replace(ab,"")
                     }
                     let roll = resultlen.match(rollresult)
                     if (roll == null){
@@ -92,12 +92,12 @@ window.addEventListener('load', () => {
                     }
                     result[names.indexOf(name)][2]+=Number(roll[1])
                     if(Number(roll[2])){
-                        result[names.indexOf(name)][0].push(repnum+resultlen.replace(/&lt;/g,"<").replace(/&gt;/g,">"))
+                        result[names.indexOf(name)][0].push(repnum+resultlen.replace(ab,"").replace(/&lt;/g,"<").replace(/&gt;/g,">"))
                         result[names.indexOf(name)][0][0]+=Number(roll[2])
                     }
                     if(Number(roll[3])){
                         console.log(roll)
-                        result[names.indexOf(name)][1].push(repnum+resultlen.replace(/&lt;/g,"<").replace(/&gt;/g,">"))
+                        result[names.indexOf(name)][1].push(repnum+resultlen.replace(ab,"").replace(/&lt;/g,"<").replace(/&gt;/g,">"))
                         result[names.indexOf(name)][1][0]+=Number(roll[3])
                     }
                 }
