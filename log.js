@@ -11,7 +11,7 @@ window.addEventListener('load', () => {
       const ab = /^(?:(?:x|rep|repeat)(\d+) )?[0-9()+-/*FCUR]*[aA][bB](?:100)?&lt;=[0-9()+-/*FCUR]+ /
       const ad = /^(?:(?:x|rep|repeat)(\d+) )?[0-9()+-/*FCUR]*[aA][dD](?:100)?&lt;=[0-9()+-/*FCUR]* /
       const p = /^<p/
-      const rollresult = /\(([\d]{1,})AB&lt;=\d+\) ＞ \[[\d,]{1,}\] ＞ [\d]{1,}\+([\d]{1,})C-([\d]{1,})E ＞ 成功数[\d]{1,}$/
+      const rollresult = /\(([\d]{1,})AB&lt;=\d+\) ＞ \[[\d,]{1,}\] ＞ [\d]{1,}\+([\d]{1,})C-([\d]{1,})E ＞ 成功数[-\d]{1,}$/
       reader.onload = () => {
         var names = []
         var result = []
@@ -91,11 +91,12 @@ window.addEventListener('load', () => {
                         break;
                     }
                     result[names.indexOf(name)][2]+=Number(roll[1])
-                    if(!Number(roll[2])){
+                    if(Number(roll[2])){
                         result[names.indexOf(name)][0].push(repnum+resultlen.replace(/&lt;/g,"<").replace(/&gt;/g,">"))
                         result[names.indexOf(name)][0][0]+=Number(roll[2])
                     }
-                    if(!Number(roll[3])){
+                    if(Number(roll[3])){
+                        console.log(roll)
                         result[names.indexOf(name)][1].push(repnum+resultlen.replace(/&lt;/g,"<").replace(/&gt;/g,">"))
                         result[names.indexOf(name)][1][0]+=Number(roll[3])
                     }
