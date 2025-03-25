@@ -16,23 +16,32 @@ window.addEventListener('load', () => {
 		const rollresult =
 			/\(([\d]{1,})AB(?:100)?&lt;=\d+\) ＞ \[[\d,]{1,}\] ＞ [\d]{1,}\+([\d]{1,})C-([\d]{1,})E ＞ 成功数[-\d]{1,}$/
 		var names = []
-		var result = []
+		var ABresult = []
+		var ADresult = []
 		const pre = document.getElementById('pre1')
-		const checkbox = document.getElementById("checkbox")
+		const namecheckbox = document.getElementById("namecheckbox")
 
-		function Output(name, result) {
-			let ret = "<h2>## " + name + "(ロール回数：" + result[2] + "回)</h2>"
+		function Output(name, ABresult, ADresult) {
+			let result
+			if(document.getElementById("AB").checked) result = ABresult
+			else if(document.getElementById("AD").checked) result = ADresult
+			else result = [[ADresult[0][0]+ABresult[0][0],ADresult[0][1]+ABresult[0][1]], 
+							ADresult[1].concat(ABresult[1]), ADresult[2].concat(ABresult[2]), ABresult[3] + ADresult[3]]
+			console.log(result)
 
-			if (!(result[0].length + result[1].length - 2)) {
+			if(!result[3]) return ""
+			let ret = "<h2>## " + name + "(ロール回数：" + result[3] + "回)</h2>"
+
+			if (!(result[0][0] + result[0][1])) {
 				ret = ret + "<p>クリエラ無し！</p>"
 				return ret
 			}
 			ret = ret + "<p>```</p>"
-			if (result[0].length - 1) {
+			if (result[0][0]) {
 				ret = ret + "<p>クリティカル : " + result[0][0] + "回(" + Math.round((
-					result[0][0] * 100) / result[2]) + "%)</p><br>"
-				for (let k = 1; k < result[0].length; k++) {
-					ret = ret + "<p>" + result[0][k] + "</p>"
+					result[0][0] * 100) / result[3]) + "%)</p><br>"
+				for (let k = 0; k < result[1].length; k++) {
+					ret = ret + "<p>" + result[1][k] + "</p>"
 				}
 			}
 
@@ -41,10 +50,10 @@ window.addEventListener('load', () => {
 			}
 
 			if (result[1].length - 1) {
-				ret = ret + "<p>エラー : " + result[1][0] + "回(" + Math.round((result
-					[1][0] * 100) / result[2]) + "%)</p><br>"
-				for (let k = 1; k < result[1].length; k++) {
-					ret = ret + "<p>" + result[1][k] + "</p>"
+				ret = ret + "<p>エラー : " + result[0][1] + "回(" + Math.round((result
+					[0][1] * 100) / result[3]) + "%)</p><br>"
+				for (let k = 0; k < result[2].length; k++) {
+					ret = ret + "<p>" + result[2][k] + "</p>"
 				}
 			}
 			ret = ret + "<p>```</p>"
@@ -52,10 +61,11 @@ window.addEventListener('load', () => {
 		}
 
         function reload(){
+			if (names.length == 0) return
             let ret = ""
             for (let i = 0; i < names.length; i++) {
                 if(document.getElementById('name_'+i).checked)
-                    ret += Output(names[i],result[i])
+                    ret += Output(names[i],ABresult[i],ADresult[i])
 			}
             pre.innerHTML = ret
         }
@@ -81,35 +91,41 @@ window.addEventListener('load', () => {
 						"<"))
 					if (!names.includes(name)) {
 						names.push(name)
-						result.push([
-							[0],
-							[0], 0
+						ABresult.push([
+							[0,0],
+							[],
+							[], 0
+						])
+						ADresult.push([
+							[0,0],
+							[],
+							[], 0
 						])
 					}
 					if (!rep) {
 						rep = "1"
 					}
 					rep = Number(rep)
-					result[names.indexOf(name)][2] += rep
-					let resultlen = ""
+					ADresult[names.indexOf(name)][3] += rep
+					let ADresultlen = ""
 					let repnum = ""
 					for (let k = 0; k < rep; k++) {
 						if (!textlen.match(ad)[1]) {
-							resultlen = text[i + 4].trim()
+							ADresultlen = text[i + 4].trim()
 							repnum = ""
 						} else {
-							resultlen = text[i + 5 + (k * 3)].trim()
+							ADresultlen = text[i + 5 + (k * 3)].trim()
 							repnum = textlen.slice(0, -3).replace(ad, "")
 						}
-						if (resultlen.endsWith("クリティカル！")) {
-							result[names.indexOf(name)][0].push(repnum + resultlen.replace(ad,
+						if (ADresultlen.endsWith("クリティカル！")) {
+							ADresult[names.indexOf(name)][1].push(repnum + ADresultlen.replace(ad,
 								"").replace(/&lt;/g, "<").replace(/&gt;/g, ">"))
-							result[names.indexOf(name)][0][0]++
+							ADresult[names.indexOf(name)][0][0]++
 						}
-						if (resultlen.endsWith("エラー")) {
-							result[names.indexOf(name)][1].push(repnum + resultlen.replace(ad,
+						if (ADresultlen.endsWith("エラー")) {
+							ADresult[names.indexOf(name)][2].push(repnum + ADresultlen.replace(ad,
 								"").replace(/&lt;/g, "<").replace(/&gt;/g, ">"))
-							result[names.indexOf(name)][1][0]++
+							ADresult[names.indexOf(name)][0][1]++
 						}
 					}
 				}
@@ -121,39 +137,37 @@ window.addEventListener('load', () => {
 						"<"))
 					if (!names.includes(name)) {
 						names.push(name)
-						result.push([
-							[0],
-							[0], 0
-						])
+						ABresult.push([[0,0],[],[], 0])
+						ADresult.push([[0,0],[],[], 0])
 					}
 					if (!rep) {
 						rep = "1"
 					}
 					rep = Number(rep)
-					let resultlen = ""
+					let ABresultlen = ""
 					let repnum = ""
 					for (let k = 0; k < rep; k++) {
 						if (!textlen.match(ab)[1]) {
-							resultlen = text[i + 4].trim()
+							ABresultlen = text[i + 4].trim()
 							repnum = ""
 						} else {
-							resultlen = text[i + 5 + (k * 3)].trim()
+							ABresultlen = text[i + 5 + (k * 3)].trim()
 							repnum = textlen.slice(0, -3).replace(ab, "")
 						}
-						let roll = resultlen.match(rollresult)
+						let roll = ABresultlen.match(rollresult)
 						if (roll == null) {
 							break;
 						}
-						result[names.indexOf(name)][2] += Number(roll[1])
+						ABresult[names.indexOf(name)][3] += Number(roll[1])
 						if (Number(roll[2])) {
-							result[names.indexOf(name)][0].push(repnum + resultlen.replace(ab,
+							ABresult[names.indexOf(name)][1].push(repnum + ABresultlen.replace(ab,
 								"").replace(/&lt;/g, "<").replace(/&gt;/g, ">"))
-							result[names.indexOf(name)][0][0] += Number(roll[2])
+							ABresult[names.indexOf(name)][0][0] += Number(roll[2])
 						}
 						if (Number(roll[3])) {
-							result[names.indexOf(name)][1].push(repnum + resultlen.replace(ab,
+							ABresult[names.indexOf(name)][2].push(repnum + ABresultlen.replace(ab,
 								"").replace(/&lt;/g, "<").replace(/&gt;/g, ">"))
-							result[names.indexOf(name)][1][0] += Number(roll[3])
+							ABresult[names.indexOf(name)][0][1] += Number(roll[3])
 						}
 					}
 				}
@@ -166,11 +180,11 @@ window.addEventListener('load', () => {
 					names[i] + '</label><br>';
 			}
 			ch += "</fieldset>"
-			checkbox.innerHTML = ch
+			namecheckbox.innerHTML = ch
 
 			let ret = ""
 			for (let i = 0; i < names.length; i++) {
-                ret += Output(names[i],result[i])
+                ret += Output(names[i],ABresult[i],ADresult[i])
 			}
 
 			pre.innerHTML = ret
