@@ -14,7 +14,17 @@
       </header>
       <main>
         <input type="file" id="file1" accept=".html"/>
-        <form id="checkbox"></form>
+        <form id="radio">
+          <input type="radio" id="AB" name="dice" value="AB" onchange="reload()" />
+          <label for="AB">ABダイスのみ集計</label>
+
+          <input type="radio" id="AD" name="dice" value="AD" onchange="reload()" />
+          <label for="AD">ADダイスのみ集計</label>
+
+          <input type="radio" id="All" name="dice" value="All" onchange="reload()" checked/>
+          <label for="All">全てのダイスを集計</label>
+        </form>
+        <form id="namecheckbox"></form>
         <pre id="pre1"></pre>
       </main>
     </div>
@@ -25,7 +35,7 @@
         Discord：KOTARU8960
       </p>
       <p>更新情報や使い方など<br>
-        <p>最終更新 2025/2/13</p>
+        <p>最終更新 2025/3/25</p>
         <a href="https://github.com/KOTARU8960/arknightsTRPGlog">https://github.com/KOTARU8960/arknightsTRPGlog</a>
       </p>
     </footer>
