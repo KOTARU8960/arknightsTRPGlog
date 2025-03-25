@@ -27,7 +27,6 @@ window.addEventListener('load', () => {
 			else if(document.getElementById("AD").checked) result = ADresult
 			else result = [[ADresult[0][0]+ABresult[0][0],ADresult[0][1]+ABresult[0][1]], 
 							ADresult[1].concat(ABresult[1]), ADresult[2].concat(ABresult[2]), ABresult[3] + ADresult[3]]
-			console.log(result)
 
 			if(!result[3]) return ""
 			let ret = "<h2>## " + name + "(ロール回数：" + result[3] + "回)</h2>"
