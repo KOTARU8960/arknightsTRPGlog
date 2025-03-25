@@ -27,7 +27,6 @@ window.addEventListener('load', () => {
 			else if(document.getElementById("AD").checked) result = ADresult
 			else result = [[ADresult[0][0]+ABresult[0][0],ADresult[0][1]+ABresult[0][1]], 
 							ADresult[1].concat(ABresult[1]), ADresult[2].concat(ABresult[2]), ABresult[3] + ADresult[3]]
-
 			if(!result[3]) return ""
 			let ret = "<h2>## " + name + "(ロール回数：" + result[3] + "回)</h2>"
 
@@ -44,11 +43,11 @@ window.addEventListener('load', () => {
 				}
 			}
 
-			if ((result[0].length - 1) && (result[1].length - 1)) {
+			if ((result[0][0]) && (result[0][1])) {
 				ret = ret + "<p>``````</p>"
 			}
 
-			if (result[1].length - 1) {
+			if (result[0][1]) {
 				ret = ret + "<p>エラー : " + result[0][1] + "回(" + Math.round((result
 					[0][1] * 100) / result[3]) + "%)</p><br>"
 				for (let k = 0; k < result[2].length; k++) {
