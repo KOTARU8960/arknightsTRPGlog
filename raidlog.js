@@ -9,11 +9,14 @@ window.addEventListener('load', () => {
 		const file = input.files[0]
 		const reader = new FileReader()
 		const ab =
-			/^(?:(?:X|x|rep|repeat)(\d+)(?: |<br>))?[0-9()+-/*FCUR]*[aA][bB](?:100)?&lt;=[0-9()+-/*FCUR]+(?:SNIPER)? /
+			/^(?:(?:X|x|rep|repeat)(\d+)(?: |<br>))?[0-9()+-/*FCUR]*[aA][bB](?:100)?&lt;=[0-9()+-/*FCUR]+(?:SNIPER)? .*(?:#1|\([\d]+AB(?:100)?&lt;=\d+(?:--SNIPER)?\) ＞ \[[\d,]+\] ＞ [\d]+\+[\d]+C-[\d]+E(?:\+[01]\(SNIPER\))? ＞ 成功数([-\d]))+$/
 		const rollresult =
 			/\([\d]+AB(?:100)?&lt;=\d+(?:--SNIPER)?\) ＞ \[[\d,]+\] ＞ [\d]+\+[\d]+C-[\d]+E(?:\+[01]\(SNIPER\))? ＞ 成功数([-\d])+$/
+		const debug = /成功数(\d+)/
 		const p = /^<p/
-		var names = []
+		const repeat = /^(?:X|x|rep|repeat)(\d+)(?: |<br>)/
+		var error = []
+		var debugresult = 0
 		var arts = 0
 		var attack = 0
 		var artsresult = 0
@@ -32,10 +35,26 @@ window.addEventListener('load', () => {
 			}
 
 			for (let i = 0; i < text.length; i++) {
+				if (debug.test(text[i])) {
+					debugresult += Number(text[i].match(debug)[1])
+				}
+
 				if (!p.test(text[i].trim())) {
 					continue
 				}
 				let textlen = text[i + 4].trim()
+
+				if (!ab.test(textlen)) {
+					err = textlen
+					if (repeat.test(textlen)) {
+						err = ""
+						let rep = Number(textlen.match(repeat)[1])
+						for (let k = 0; k < rep; k++) {
+							err += "<br>"+text[i + 4 + (k * 3)].trim()+"<br>"+text[i + 5 + (k * 3)].trim()
+						}
+					}
+				error.push(err)
+				}	
 
 				if (ab.test(textlen)) {
 					let rep = textlen.match(ab)[1]
@@ -88,9 +107,15 @@ window.addEventListener('load', () => {
 			let ret = ""
 			ret += "<h2>総攻撃回数："+All+"</h2>"
 			ret += "<h2>物理攻撃回数："+attack+"</h2>"
-			ret += "<h2>物理攻撃成功数："+atackresult+"</h2>"
+			ret += "<h3>物理攻撃成功数："+atackresult+"</h3>"
 			ret += "<h2>アーツ攻撃回数："+arts+"</h2>"
-			ret += "<h2>アーツ攻撃成功数："+artsresult+"</h2>"
+			ret += "<h3>アーツ攻撃成功数："+artsresult+"</h3>"
+			ret += "成功数累計(debug)："+debugresult+"<br><br>"
+
+			ret += "<h2>集計外判定になった物</h2>"
+			for (let i = 0; i < error.length; i++) {
+				ret += error[i] + "<br><br>"
+			}
 
 
 			pre.innerHTML = ret
