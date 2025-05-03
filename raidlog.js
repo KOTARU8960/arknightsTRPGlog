@@ -1,0 +1,103 @@
+window.addEventListener('load', () => {
+	const f = document.getElementById('file1')
+	f.addEventListener('change', evt => {
+		let input = evt.target
+		if (input.files.length == 0) {
+			console.log('No file selected')
+			return
+		}
+		const file = input.files[0]
+		const reader = new FileReader()
+		const ab =
+			/^(?:(?:X|x|rep|repeat)(\d+)(?: |<br>))?[0-9()+-/*FCUR]*[aA][bB](?:100)?&lt;=[0-9()+-/*FCUR]+(?:SNIPER)? /
+		const rollresult =
+			/\([\d]+AB(?:100)?&lt;=\d+(?:--SNIPER)?\) ＞ \[[\d,]+\] ＞ [\d]+\+[\d]+C-[\d]+E(?:\+[01]\(SNIPER\))? ＞ 成功数([-\d])+$/
+		const p = /^<p/
+		var names = []
+		var arts = 0
+		var attack = 0
+		var artsresult = 0
+		var atackresult = 0 
+		var All = 0
+		var type = 0
+		const pre = document.getElementById('pre1')
+		const namecheckbox = document.getElementById("namecheckbox")
+
+		reader.onload = () => {
+			const text = reader.result.split('\n')
+
+			if (text[6] != "    <title>ccfolia - logs</title>") {
+				pre.innerHTML = "<h2>ccfoliaのログファイルではありません</h2>"
+				return
+			}
+
+			for (let i = 0; i < text.length; i++) {
+				if (!p.test(text[i].trim())) {
+					continue
+				}
+				let textlen = text[i + 4].trim()
+
+				if (ab.test(textlen)) {
+					let rep = textlen.match(ab)[1]
+					// let namelen = text[i + 2]
+					// let name = namelen.substring(namelen.indexOf(">") + 1, namelen.lastIndexOf(
+					// 	"<"))
+					// if (!names.includes(name)) {
+					// 	names.push(name)
+					// 	ABresult.push([[]])
+					// }
+					if (!rep) {
+						rep = "1"
+					}
+					rep = Number(rep)
+					let ABresultlen = ""
+					let repnum = ""
+					if (textlen.indexOf("アーツ攻撃判定") != -1) {
+						type = 1
+					}
+					else {
+						type = 0
+					}
+					for (let k = 0; k < rep; k++) {
+						if (!textlen.match(ab)[1]) {
+							ABresultlen = text[i + 4].trim()
+							repnum = ""
+						} else {
+							ABresultlen = text[i + 5 + (k * 3)].trim()
+							repnum = textlen.slice(0, -3).replace(ab, "")
+						}
+						let roll = ABresultlen.match(rollresult)
+						if (roll == null) {
+							break;
+						}
+						
+						if (type) {
+							artsresult += Number(roll[1])
+							arts += 1
+						}
+						else if (!type) {
+							atackresult += Number(roll[1])
+							console.log(roll[0])
+							attack += 1
+						}
+					}
+					All += rep
+				}
+			}
+
+			let ret = ""
+			ret += "<h2>総攻撃回数："+All+"</h2>"
+			ret += "<h2>物理攻撃回数："+attack+"</h2>"
+			ret += "<h2>物理攻撃成功数："+atackresult+"</h2>"
+			ret += "<h2>アーツ攻撃回数："+arts+"</h2>"
+			ret += "<h2>アーツ攻撃成功数："+artsresult+"</h2>"
+
+
+			pre.innerHTML = ret
+		}
+
+
+
+		reader.readAsText(file)
+	})
+})
