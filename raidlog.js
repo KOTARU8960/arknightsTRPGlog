@@ -9,12 +9,12 @@ window.addEventListener('load', () => {
 		const file = input.files[0]
 		const reader = new FileReader()
 		const ab =
-			/^(?:(?:X|x|rep|repeat)(\d+)(?: |<br>))?[0-9()+-/*FCUR]*[aA][bB](?:100)?&lt;=[0-9()+-/*FCUR]+(?:SNIPER)? .*(?:#1|\([\d]+AB(?:100)?&lt;=\d+(?:--SNIPER)?\) ＞ \[[\d,]+\] ＞ [\d]+\+[\d]+C-[\d]+E(?:\+[01]\(SNIPER\))? ＞ 成功数([-\d]))+$/
+			/^(?:(?:X|x|rep|repeat)(\d+)(?: +|　+|<br>))?[0-9()+-/*FCUR]*[aA][bB](?:100)?&lt;=[0-9()+-/*FCUR]+(?:SNIPER)? .*(?:#1|\([\d]+AB(?:100)?&lt;=\d+(?:--SNIPER)?\) ＞ \[[\d,]+\] ＞ [\d]+\+[\d]+C-[\d]+E(?:\+[01]\(SNIPER\))? ＞ 成功数([-\d]))+$/
 		const rollresult =
 			/\([\d]+AB(?:100)?&lt;=\d+(?:--SNIPER)?\) ＞ \[[\d,]+\] ＞ [\d]+\+[\d]+C-[\d]+E(?:\+[01]\(SNIPER\))? ＞ 成功数([-\d])+$/
 		const debug = /成功数(\d+)/
 		const p = /^<p/
-		const repeat = /^(?:X|x|rep|repeat)(\d+)(?: |<br>)/
+		const repeat = /^(?:X|x|rep|repeat)(\d+)(?: +|　+|<br>)/
 		var error = []
 		var debugresult = 0
 		var arts = 0
@@ -24,7 +24,6 @@ window.addEventListener('load', () => {
 		var All = 0
 		var type = 0
 		const pre = document.getElementById('pre1')
-		const namecheckbox = document.getElementById("namecheckbox")
 
 		reader.onload = () => {
 			const text = reader.result.split('\n')
@@ -58,13 +57,6 @@ window.addEventListener('load', () => {
 
 				if (ab.test(textlen)) {
 					let rep = textlen.match(ab)[1]
-					// let namelen = text[i + 2]
-					// let name = namelen.substring(namelen.indexOf(">") + 1, namelen.lastIndexOf(
-					// 	"<"))
-					// if (!names.includes(name)) {
-					// 	names.push(name)
-					// 	ABresult.push([[]])
-					// }
 					if (!rep) {
 						rep = "1"
 					}
