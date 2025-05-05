@@ -14,7 +14,7 @@ window.addEventListener('load', () => {
 			/\([\d]+AB(?:100)?&lt;=\d+(?:--SNIPER)?\) ＞ \[[\d,]+\] ＞ [\d]+\+[\d]+C-[\d]+E(?:\+[01]\(SNIPER\))? ＞ 成功数([-\d])+$/
 		const debug = /成功数(\d+)/
 		const p = /^<p/
-		const repeat = /^(?:X|x|rep|repeat)(\d+)(?: +|　+|<br>)/
+		const span = /<\/span>/
 		var error = []
 		var debugresult = 0
 		var arts = 0
@@ -45,12 +45,13 @@ window.addEventListener('load', () => {
 
 				if (!ab.test(textlen)) {
 					err = textlen
-					if (repeat.test(textlen)) {
-						err = ""
-						let rep = Number(textlen.match(repeat)[1])
-						for (let k = 0; k < rep; k++) {
-							err += "<br>"+text[i + 4 + (k * 3)].trim()+"<br>"+text[i + 5 + (k * 3)].trim()
+					k = i+4
+					while (true){
+						k++
+						if (text[k].match(span)) {
+							break
 						}
+						err += "<br>"+text[k].trim()
 					}
 				error.push(err)
 				}	
