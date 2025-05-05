@@ -10,11 +10,14 @@ window.addEventListener('load', () => {
 		const reader = new FileReader()
 		const ab =
 			/^(?:(?:X|x|rep|repeat)(\d+)(?: +|　+|<br>))?[0-9()+-/*FCUR]*[aA][bB](?:100)?&lt;=[0-9()+-/*FCUR]+(?:SNIPER)? .*(?:#1|\([\d]+AB(?:100)?&lt;=\d+(?:--SNIPER)?\) ＞ \[[\d,]+\] ＞ [\d]+\+[\d]+C-[\d]+E(?:\+[01]\(SNIPER\))? ＞ 成功数([-\d]))+$/
+
 		const rollresult =
 			/\([\d]+AB(?:100)?&lt;=\d+(?:--SNIPER)?\) ＞ \[[\d,]+\] ＞ [\d]+\+[\d]+C-[\d]+E(?:\+[01]\(SNIPER\))? ＞ 成功数([-\d])+$/
 		const debug = /成功数(\d+)/
+		const repeat = /^(?:X|x|rep|repeat)(\d+)(?: +|　+|<br>)/
 		const p = /^<p/
 		const span = /<\/span>/
+		const pl = /<br>プレイヤー名：(.+)<br>/
 		var error = []
 		var debugresult = 0
 		var arts = 0
@@ -23,7 +26,18 @@ window.addEventListener('load', () => {
 		var atackresult = 0 
 		var All = 0
 		var type = 0
+		var csv = "PL名,OP名,ダメージ属性,ダメージ量,ロールしたダイス<br>"
 		const pre = document.getElementById('pre1')
+
+		function findPL(name,text) {
+			var name = new RegExp("コードネーム："+name)
+			for (let i = 0; i < text.length; i++) {
+				if (name.test(text[i])) {
+					return text[i].match(pl)[1]
+				}
+			}
+			return "不明"
+		}
 
 		reader.onload = () => {
 			const text = reader.result.split('\n')
@@ -38,7 +52,7 @@ window.addEventListener('load', () => {
 					debugresult += Number(text[i].match(debug)[1])
 				}
 
-				if (!p.test(text[i].trim())) {
+				if (!p.test(text[i].trim()) || text[i+1]!="  <span> [main]</span>") {
 					continue
 				}
 				let textlen = text[i + 4].trim()
@@ -57,6 +71,11 @@ window.addEventListener('load', () => {
 				}	
 
 				if (ab.test(textlen)) {
+					let namelen = text[i + 2]
+					let name = namelen.substring(namelen.indexOf(">") + 1, namelen.lastIndexOf("<"))
+					let PLname = findPL(name,text)
+					csv += PLname + "," + name + ","
+
 					let rep = textlen.match(ab)[1]
 					if (!rep) {
 						rep = "1"
@@ -66,10 +85,13 @@ window.addEventListener('load', () => {
 					let repnum = ""
 					if (textlen.indexOf("アーツ攻撃判定") != -1) {
 						type = 1
+						csv += "アーツ,"
 					}
 					else {
 						type = 0
+						csv += "物理,"
 					}
+					let result = 0
 					for (let k = 0; k < rep; k++) {
 						if (!textlen.match(ab)[1]) {
 							ABresultlen = text[i + 4].trim()
@@ -85,17 +107,21 @@ window.addEventListener('load', () => {
 						
 						if (type) {
 							artsresult += Number(roll[1])
+							result += Number(roll[1])
 							arts += 1
 						}
 						else if (!type) {
 							atackresult += Number(roll[1])
-							console.log(roll[0])
+							result += Number(roll[1])
 							attack += 1
 						}
 					}
 					All += rep
+					csv += result + "<br>"
 				}
 			}
+			csv += ",,,<br>,,,<br>,,,"
+			
 
 			let ret = ""
 			ret += "<h2>総攻撃回数："+All+"</h2>"
@@ -109,6 +135,8 @@ window.addEventListener('load', () => {
 			for (let i = 0; i < error.length; i++) {
 				ret += error[i] + "<br><br>"
 			}
+			ret += "<h2>csvファイルの中身です、ダウンロードは未実装</h2>"
+			ret += csv
 
 
 			pre.innerHTML = ret
