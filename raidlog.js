@@ -9,7 +9,7 @@ window.addEventListener('load', () => {
 		const file = input.files[0]
 		const reader = new FileReader()
 		const ab =
-			/^(?:(?:X|x|rep|repeat)(\d+)(?: +|　+|<br>))?[0-9()+-/*FCUR]*[aA][bB](?:100)?&lt;=[0-9()+-/*FCUR]+(?:SNIPER)? .*(?:#1|\([\d]+AB(?:100)?&lt;=\d+(?:--SNIPER)?\) ＞ \[[\d,]+\] ＞ [\d]+\+[\d]+C-[\d]+E(?:\+[01]\(SNIPER\))? ＞ 成功数([-\d]))+$/
+			/^(?:(?:X|x|rep|repeat)(\d+)(?: +|　+|<br>))?([0-9()+-/*FCUR]*[aA][bB](?:100)?&lt;=[0-9()+-/*FCUR]+(?:SNIPER)? .*)(?:#1|\([\d]+AB(?:100)?&lt;=\d+(?:--SNIPER)?\) ＞ \[[\d,]+\] ＞ [\d]+\+[\d]+C-[\d]+E(?:\+[01]\(SNIPER\))? ＞ 成功数([-\d]))+$/
 
 		const rollresult =
 			/\([\d]+AB(?:100)?&lt;=\d+(?:--SNIPER)?\) ＞ \[[\d,]+\] ＞ [\d]+\+[\d]+C-[\d]+E(?:\+[01]\(SNIPER\))? ＞ 成功数([-\d])+$/
@@ -26,7 +26,7 @@ window.addEventListener('load', () => {
 		var atackresult = 0 
 		var All = 0
 		var type = 0
-		var csv = [["PL名","OP名","ダメージ属性","ダメージ量"]]
+		var csv = [["PL名","OP名","ダメージ属性","ダメージ量","ダイス内容","ロール回数"]]
 		const pre = document.getElementById('pre1')
 		var skip = false
 
@@ -122,6 +122,7 @@ window.addEventListener('load', () => {
 					for (let k = 0; k < csv.length; k++) {
 						if (csv[k][0] == PLname && csv[k][1] == name) {
 							csv[k][3] += result
+							csv[k][5] += rep
 							skip = true
 							break
 							}
@@ -130,10 +131,10 @@ window.addEventListener('load', () => {
 						continue
 					}
 					if (type) {
-						csv.push([PLname,name,"アーツ",result])
+						csv.push([PLname,name,"アーツ",result,textlen.match(ab)[2],rep])
 					}
 					else if (!type) {
-						csv.push([PLname,name,"物理",result])
+						csv.push([PLname,name,"物理",result,textlen.match(ab)[2],rep])
 					}
 				}
 			}			
@@ -152,7 +153,7 @@ window.addEventListener('load', () => {
 			}
 			ret += "<h2>csvファイルの中身です、ダウンロードは未実装</h2>"
 			for (let i = 0; i < csv.length; i++) {
-				ret += csv[i][0] + "," + csv[i][1] + "," + csv[i][2] + "," + csv[i][3] + "<br>"
+				ret += csv[i][0] + "," + csv[i][1] + "," + csv[i][2] + "," + csv[i][3] + "," + csv[i][4] + "," + csv[i][5] + "<br>"
 			}
 
 
