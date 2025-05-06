@@ -12,7 +12,7 @@ window.addEventListener('load', () => {
 			/^(?:(?:X|x|rep|repeat)(\d+)(?: +|　+|<br>))?[0-9()+-/*FCUR]*[aA][bB](?:100)?&lt;=[0-9()+-/*FCUR]+(?:SNIPER)? .*(?:#1|\([\d]+AB(?:100)?&lt;=\d+(?:--SNIPER)?\) ＞ \[[\d,]+\] ＞ [\d]+\+[\d]+C-[\d]+E(?:\+[01]\(SNIPER\))? ＞ 成功数([-\d]))+$/
 
 		const rollresult =
-			/\(\d+AB(?:100)?&lt;=\d+(?:--SNIPER)?\) ＞ \[([\d,]+)\] ＞ [\d]+\+[\d]+C-[\d]+E(?:\+[01]\(SNIPER\))? ＞ 成功数([-\d])+$/
+			/\(\d+AB(?:100)?&lt;=\d+(?:--SNIPER)?\) ＞ \[([\d,]+)\] ＞ [\d]+\+[\d]+C-([\d])+E(?:\+[01]\(SNIPER\))? ＞ 成功数[-\d]+$/
 		const debug = /成功数(\d+)/
 		const repeat = /^(?:X|x|rep|repeat)(\d+)(?: +|　+|<br>)/
 		const p = /^<p/
@@ -29,6 +29,7 @@ window.addEventListener('load', () => {
 		var csv = [["PL名","OP名","ダメージ属性","ダメージ量"]]
 		const pre = document.getElementById('pre1')
 		var skip = false
+		var fumble = 0
 
 		function findPL(name,text) {
 			var name = new RegExp("<span>"+name+"</span>")
@@ -75,6 +76,7 @@ window.addEventListener('load', () => {
 				}	
 
 				if (ab.test(textlen)) {
+					fumble = 0
 					let namelen = text[i + 2]
 					let name = namelen.substring(namelen.indexOf(">") + 1, namelen.lastIndexOf("<"))
 					let PLname = findPL(name,text)
@@ -109,6 +111,7 @@ window.addEventListener('load', () => {
 								cri += 2
 							}
 						}
+						fumble = Number(roll[2])
 						if (roll == null) {
 							break;
 						}
