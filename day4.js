@@ -111,19 +111,20 @@ window.addEventListener('load', () => {
 								cri += 2
 							}
 						}
-						fumble = Number(roll[2])
+						fumble = Number(ABresultlen.match(rollresult)[2])
+						let success = cri-fumble
 						if (roll == null) {
 							break;
 						}
 						
 						if (type) {
-							artsresult += cri
-							result += cri
+							artsresult += success
+							result += success
 							arts += 1
 						}
 						else if (!type) {
-							atackresult += cri
-							result += cri
+							atackresult += success
+							result += success
 							attack += 1
 						}
 					}
