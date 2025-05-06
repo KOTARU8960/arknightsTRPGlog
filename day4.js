@@ -141,11 +141,12 @@ window.addEventListener('load', () => {
 					if (skip == true) {
 						continue
 					}
+					console.log(textlen)
 					if (type) {
-						csv.push([PLname,name,"アーツ",result,ABresultlen.match(ab)[2],rep])
+						csv.push([PLname,name,"アーツ",result,textlen.match(ab)[2],rep])
 					}
 					else if (!type) {
-						csv.push([PLname,name,"物理",result,ABresultlen.match(ab)[2],rep])
+						csv.push([PLname,name,"物理",result,textlen.match(ab)[2],rep])
 					}
 				}
 			}			
