@@ -16,11 +16,10 @@ window.addEventListener('load', () => {
     }
 
     var text = await navigator.clipboard.readText();
-    console.log(text);
-    if (text.slice(0, 1) == '"') {
+    if (text.slice(-1) == '"') {
       text = text.slice(0, -1);
     }
-    if (text.slice(-1) == '"') {
+    if (text.slice(0,1) == '"') {
       text = text.slice(1);
     }
     text = text.replace(/""/g, '"')
