@@ -26,3 +26,11 @@ footer {
   background: #ccccff;
   width: 98%;
 }
+
+button {
+  background: #ffcccc;
+  border: none;
+  padding: 5%;
+  cursor: pointer;
+  width: 80%;
+}
